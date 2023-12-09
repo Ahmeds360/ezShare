@@ -109,7 +109,7 @@ fileshtml = """
 
 
 
-DEBUG = True
+DEBUG = False
 
 
 def get_local_ip():
