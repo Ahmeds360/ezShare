@@ -11,6 +11,103 @@ import os
 import colorama
 from colorama import Fore, Back, Style
 colorama.init()
+from jinja2 import Environment, BaseLoader
+
+indexhtml = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ezShare</title>
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+<body style="height: 100vh; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; background-color: #ebdbbc; justify-content: center; font-family: 'Inter', sans-serif;">
+    <h1>ezShare</h1>
+    <p>Your files are avaliable at <a href= {{ filesUrl }}> {{ filesUrl }} </a> </p>
+    <img src={{qr}} >
+    <p>Thank you for using ezShare!</p>
+</body>
+</html>
+"""
+
+
+fileshtml = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files View</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .file-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ebdbbc;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-name {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .file-size {
+            font-size: 0.8em;
+            color: #555;
+        }
+        .download-button {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    {% for file in files %}
+    <div class="file-bar">
+        
+
+        <div class="file-details">
+            <span class="file-name">{{file['name']}}</span>
+            <span class="file-name">{{file['size']}}</span>
+
+
+        </div>
+        <a href="{{file['url']}}" class="download-button">Download</a>
+    </div>
+    
+    {% endfor %}
+</body>
+</html>
+"""
+
+
 
 DEBUG = True
 
@@ -63,7 +160,7 @@ print(Fore.RED + "" + Style.RESET_ALL)
 
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
+#templates = Jinja2Templates(directory="templates")
 
 
 def getFiles():
@@ -77,14 +174,21 @@ def getFiles():
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    template = Environment(loader=BaseLoader()).from_string(indexhtml)
+    data = template.render({"request": request, "filesUrl": f'http://{get_local_ip()}:1337/files', "qr": f'data:image/png;base64,{gererateBase64QRCode(f"http://{get_local_ip()}:1337/files")}'})
 
 
-    return templates.TemplateResponse("index.html", {"request": request, "filesUrl": f'http://{get_local_ip()}:1337/files', "qr": f'data:image/png;base64,{gererateBase64QRCode(f"http://{get_local_ip()}:1337/files")}'})
+    #return templates.TemplateResponse("index.html", {"request": request, "filesUrl": f'http://{get_local_ip()}:1337/files', "qr": f'data:image/png;base64,{gererateBase64QRCode(f"http://{get_local_ip()}:1337/files")}'})
+    return HTMLResponse(content=data, status_code=200)
 
 
 @app.get("/files", response_class=HTMLResponse)
 async def files(request: Request):
-    return templates.TemplateResponse("files.html", {"request": request, "files": getFiles()})
+    template = Environment(loader=BaseLoader()).from_string(fileshtml)
+    data = template.render({"request": request, "files": getFiles()})
+    
+    #return templates.TemplateResponse("files.html", {"request": request, "files": getFiles()})
+    return HTMLResponse(content=data, status_code=200)
 
 
 @app.get("/download/{file}", response_class=FileResponse)
