@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --console --name "ezShare"  "C:/Users/Ahmad/Desktop/Developer/ezShare/main.py"
