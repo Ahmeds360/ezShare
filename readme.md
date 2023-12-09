@@ -1,6 +1,5 @@
 # ezShare
 
-[![License](https://img.shields.io/github/license/Ahmeds360/ezShare)](https://github.com/Ahmeds360/ezShare/blob/main/LICENSE)
 
 ezShare is a console tool that simplifies file sharing within your network. With ezShare, you can quickly share files by making them available over your local network. No need for complex setups or cloud services – just download, add to your path, and start sharing.
 
