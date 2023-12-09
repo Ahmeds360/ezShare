@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files View</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .file-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ebdbbc;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+
+        .file-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-name {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .file-size {
+            font-size: 0.8em;
+            color: #555;
+        }
+        .download-button {
+            background-color: #1a1a1a;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+
+
+    
+
+
+    {% for file in files %}
+    <div class="file-bar">
+        
+
+        <div class="file-details">
+            <span class="file-name">{{file['name']}}</span>
+            <span class="file-name">{{file['size']}}</span>
+
+
+        </div>
+        <a href="{{file['url']}}" class="download-button">Download</a>
+    </div>
+    
+    {% endfor %}
+    
+
+</body>
+</html>
